@@ -1,0 +1,19 @@
+===Namespacing===
+* avoid trampling over defined functions
+* avoid polluting global namespace
+
+Example:
+ foo = {
+ 	"bar":function() {
+ 		baz();
+ 	}
+ };
+ foo.bar();
+
+===Feature detection===
+* check for features rather than browers
+
+Example: checking for console to debug
+ if(console.debug) {
+ 	console.debug('foo');
+ }
