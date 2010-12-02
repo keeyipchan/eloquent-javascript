@@ -7,11 +7,11 @@ debug(abs(1));
 debug(abs(0));
 
 function debug(s) {
-	if(print) {
+	if(typeof(print) != 'undefined') {
 		print(s);
-	} else if(console)  {
+	} else if(typeof(console) != 'undefined' && console.debug)  {
 		console.debug(s);
-	} else {
+	} else if(typeof(alert) != 'undefined') {
 		alert(s)
 	}
 }
