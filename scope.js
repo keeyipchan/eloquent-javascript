@@ -1,5 +1,5 @@
-ejs = {
-		function debug(s) {
+var ejs = {
+		'debug':function(s) {
 			if(typeof(print) != 'undefined') {
 				print(s);
 			} else if(typeof(console) != 'undefined' && console.debug)  {
