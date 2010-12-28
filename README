@@ -1,1 +1,1 @@
-Some naive implementations of the exercises in Marijn Haverbeke's Eloquent Javascript.  They're not ordered in any way, and may contain many trappings that novice Javascripters fall into!
+Some naive implementations of the exercises in Marijn Haverbeke's Eloquent Javascript.  They're not ordered in any way, and may (actually - *will*) contain many trappings that novice Javascripters fall into!  All of the exercises were run through rhino.
