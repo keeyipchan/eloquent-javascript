@@ -15,16 +15,16 @@ var ejs = {
 			ejs.debug('---------------------------');
 		}
 };
-ejs.banner('forEach / map');
-function map(a, f) {
+ejs.banner('forEach');
+function forEach(a, f) {
 	for (i in a)
 		a[i] = f(a[i]);
 	return a;
 }
-ejs.debug(map([1, 2, 3, 4], function(x) { return x + 5; }));
-ejs.debug(map([1, 2, 3, 4], ejs.debug));
-ejs.banner('reimplementing forEach / map so that it is non destructive');
-function map(a, f) {
+ejs.debug(forEach([1, 2, 3, 4], function(x) { return x + 5; }));
+ejs.debug(forEach([1, 2, 3, 4], ejs.debug));
+ejs.banner('reimplementing forEach so that it is non destructive');
+function forEach(a, f) {
 	for (i in a)
 		f(a[i]);
 }
@@ -32,7 +32,7 @@ function map(a, f) {
 ejs.banner('reimplementing sum');
 function sum(a) {
 	var total = 0;
-	map(a, function(n) {
+	forEach(a, function(n) {
 		total += n;
 	});
 	return total;
@@ -53,7 +53,7 @@ ejs.debug((negate(isNaN))(undefined));
 
 ejs.banner('reduce and implementation of sum with reduce');
 function reduce(combine, base, a) {
-	map(a, function(x) {
+	forEach(a, function(x) {
 		base = combine(base, x);
 	});
 	return base;
