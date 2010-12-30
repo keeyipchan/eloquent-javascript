@@ -74,3 +74,25 @@ function count_zeroes(a) {
 ejs.debug(count_zeroes([1, 2, 3, 0]));
 ejs.debug(count_zeroes([1, 2, 0, 0, 3, 0]));
 ejs.debug(count_zeroes([1]));
+
+ejs.banner('pass test function');
+function count(test, a) {
+	return reduce(function(base, x) {
+		return test(x) ? base + 1 : base;	
+	}, 0, a);
+}
+
+function equals(x) {
+	return function(y) {
+		return (x === y);
+	}
+}
+
+function count_zeroes_2(a) {
+	return count(equals(0), a);
+}
+ejs.debug(count_zeroes_2([1, 2, 3, 0]));
+ejs.debug(count_zeroes_2([1, 2, 0, 0, 3, 0]));
+ejs.debug(count_zeroes_2([1]));
+
+
