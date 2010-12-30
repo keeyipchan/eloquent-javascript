@@ -95,4 +95,15 @@ ejs.debug(count_zeroes_2([1, 2, 3, 0]));
 ejs.debug(count_zeroes_2([1, 2, 0, 0, 3, 0]));
 ejs.debug(count_zeroes_2([1]));
 
+ejs.banner('map');
+function map(f, a) {
+	var result = []
+	forEach(a, function(e) {
+		result.push(f(e));
+	}); 
+	return result;
+}
 
+ejs.debug(map(function (x) { return x * 2; }, [1, 2, 3, 4, 5]));
+
+ejs.banner('6.2');
