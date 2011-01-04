@@ -106,7 +106,6 @@ function map(f, a) {
 
 ejs.debug(map(function (x) { return x * 2; }, [1, 2, 3, 4, 5]));
 
-ejs.banner('6.2');
 
 function recluseFile() {
 	return "" + 
@@ -224,4 +223,53 @@ function recluseFile() {
 "were using another language.'\n"; 
 
 }
-ejs.debug(recluseFile());
+
+//Split the file into paragraphs by cutting it at every empty line.
+//Remove the '%' characters from header paragraphs and mark them as headers.
+//Process the text of the paragraphs themselves, splitting them into normal parts, emphasised parts, and footnotes.
+//Move all the footnotes to the bottom of the document, leaving numbers1 in their place.
+//Wrap each piece into the correct HTML tags.
+//Combine everything into a single HTML document.
+ejs.banner('split into paragraphs');
+var paragraphs = recluseFile().split("\n\n");
+forEach(paragraphs, function(e) {
+	ejs.debug(e + "\n--");
+});
+ejs.debug('got ' + paragraphs.length + ' paragraphs');
+
+ejs.banner('6.2');
+function processParagraph(s) {
+	var header_pattern = /^%{1,2}/;
+	var p = {};
+	var matches = s.match(header_pattern)
+	if (matches) {
+		p['type'] = 'h' + matches[0].length;	
+		p['content'] = s.slice(matches[0].length);	
+	} else {
+		p['type'] = 'p';	
+		p['content'] = s	
+	}
+	return p;
+}
+a = map(processParagraph, paragraphs);
+ejs.debug(a);
+forEach(a, function(e) { 
+		ejs.debug('<' + e['type'] + '>' + e['content']); 
+		});
+ejs.banner('6.2 using charAt()');
+function processParagraph(s) {
+	var count = 0;
+	while(s.charAt(0) == '%') {
+		s = s.slice(1);
+		count++;
+	}
+	return {'type': (count > 0) ? 'h' + count : 'p', 'content':s };
+}
+
+a = map(processParagraph, paragraphs);
+ejs.debug(a);
+forEach(a, function(e) { 
+		ejs.debug('<' + e['type'] + '>' + e['content']); 
+		});
+ejs.banner('6.3');
+
