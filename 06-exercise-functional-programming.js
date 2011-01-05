@@ -272,4 +272,36 @@ forEach(a, function(e) {
 		ejs.debug('<' + e['type'] + '>' + e['content']); 
 		});
 ejs.banner('6.3');
+function splitParagraph(s) {
+	var type;
+	var content;	
+	var fragments = [];
 
+	while(s) {
+		parseParagraph(s);
+	}
+
+	function parseParagraph(s) {
+		var firstChar =  s.charAt(0);
+		if(firstChar =='{') {
+
+		} else if (firstChar == '*') {
+
+		} else {
+
+		}
+	}
+
+	function extractFootNote(s) {
+
+	}
+
+	function extractEmphasized(s) {
+
+	}
+
+	function extractText(s) {
+
+	}
+}
+var testString = '';
