@@ -273,35 +273,53 @@ forEach(a, function(e) {
 		});
 ejs.banner('6.3');
 function splitParagraph(s) {
-	var type;
-	var content;	
+	var paragraph = s;
 	var fragments = [];
 
-	while(s) {
-		parseParagraph(s);
+	while(paragraph) {
+		parseParagraph();
 	}
+	return fragments;
 
-	function parseParagraph(s) {
-		var firstChar =  s.charAt(0);
+	function parseParagraph() {
+		var firstChar =  paragraph.charAt(0);
+		var lastChar;
+		var fragment;
 		if(firstChar =='{') {
-
+			lastChar = getIndexOfChar('}');
+			fragment = {'content':paragraph.slice(1, lastChar), 'type':'em'};
+			paragraph = paragraph.slice(lastChar + 1);
 		} else if (firstChar == '*') {
-
+			paragraph = paragraph.slice(1);
+			lastChar = getIndexOfChar('*');
+			fragment = {'content':paragraph.slice(0, lastChar), 'type':'footnote'};
+			paragraph = paragraph.slice(lastChar + 1);
 		} else {
-
+			lastCharEm = getIndexOfChar('{');
+			lastCharFootnote = getIndexOfChar('*');
+			if(lastCharEm == -1 && lastCharFootnote == -1) {
+				lastChar = paragraph.length;
+			} else {
+				lastChar = lastCharEm > lastCharFootnote ? lastCharFootnote : lastCharEm;
+			}
+			fragment = {'content':paragraph.slice(0, lastChar), 'type':'text'};
+			paragraph = paragraph.slice(lastChar);
 		}
+		//ejs.debug(fragment['content']);
+		fragments.push(fragment);
 	}
 
-	function extractFootNote(s) {
-
-	}
-
-	function extractEmphasized(s) {
-
-	}
-
-	function extractText(s) {
-
+	function getIndexOfChar(c) {
+		//ejs.debug('in getIndexOfChar()');
+		var count = 0;
+		var s = '';
+		while(paragraph.length > count && paragraph.charAt(count) != c) {
+			count++;
+		}
+		return count;
 	}
 }
-var testString = '';
+var testString = 'foo{bar}*baz*boo';
+forEach(splitParagraph(testString), function(e) {
+ejs.debug(e['type'] + ' ' + e['content']);
+});
