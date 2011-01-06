@@ -319,7 +319,36 @@ function splitParagraph(s) {
 		return count;
 	}
 }
+ejs.debug('test 1 ====');
 var testString = 'foo{bar}*baz*boo';
 forEach(splitParagraph(testString), function(e) {
-ejs.debug(e['type'] + ' ' + e['content']);
+	ejs.debug(e['type'] + ' ' + e['content']);
+});
+ejs.debug('test 2 ====');
+var testString = 'foo{bar}*baz**boo*';
+forEach(splitParagraph(testString), function(e) {
+	ejs.debug(e['type'] + ' ' + e['content']);
+});
+ejs.debug('test 3 ====');
+var testString = '{foo}{bar}baz{boo}';
+forEach(splitParagraph(testString), function(e) {
+	ejs.debug(e['type'] + ' ' + e['content']);
+});
+ejs.banner('Combine with processPAragraph');
+function processParagraph(s) {
+	var count = 0;
+	while(s.charAt(0) == '%') {
+		s = s.slice(1);
+		count++;
+	}
+	return {'type': (count > 0) ? 'h' + count : 'p', 'content':splitParagraph(s) };
+}
+var paragraphs = recluseFile().split("\n\n");
+a = map(processParagraph, paragraphs);
+ejs.debug(a);
+forEach(a, function(e) { 
+		ejs.debug('<' + e['type'] + '>');
+		forEach(e['content'], function(e2) {
+			ejs.debug('<' + e2['type'] + '>' + e2['content']); 
+		});
 });
