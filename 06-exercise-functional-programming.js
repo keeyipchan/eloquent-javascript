@@ -287,12 +287,12 @@ function splitParagraph(s) {
 		var fragment;
 		if(firstChar =='{') {
 			lastChar = getIndexOfChar('}');
-			fragment = {'content':paragraph.slice(1, lastChar), 'type':'em'};
+			fragment = {'content':paragraph.slice(1, lastChar), 'type':'footnote'};
 			paragraph = paragraph.slice(lastChar + 1);
 		} else if (firstChar == '*') {
 			paragraph = paragraph.slice(1);
 			lastChar = getIndexOfChar('*');
-			fragment = {'content':paragraph.slice(0, lastChar), 'type':'footnote'};
+			fragment = {'content':paragraph.slice(0, lastChar), 'type':'em'};
 			paragraph = paragraph.slice(lastChar + 1);
 		} else {
 			lastCharEm = getIndexOfChar('{');
@@ -352,3 +352,34 @@ forEach(a, function(e) {
 			ejs.debug('<' + e2['type'] + '>' + e2['content']); 
 		});
 });
+ejs.banner('testing function scope again');
+function outter() {
+	var foo = ['bar'];
+	function inner(arg) {
+		arg[0] = 'baz';
+	}
+	inner(foo);
+	return foo;
+}
+ejs.debug(outter());
+
+ejs.banner('extract footnotes');
+function extractFootnotes(paragraphs) {
+	var count = 0;
+	var footnotes = [];
+	forEach(paragraphs, function(p) {
+		if(typeof(p['content'] != 'undefined' && p['content'].length > 0) {
+			forEach(p['content'], function(fragment) {
+				if(fragment['type'] == 'footnote') {
+					footnotes.push(fragment['content']);
+					fragment['content'] = count;
+					fragment['type'] == 'reference';
+					count++;
+				}
+			});
+		}
+	}); 
+	return footnotes;
+}
+
+ejs.debug();
