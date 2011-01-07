@@ -368,7 +368,7 @@ function extractFootnotes(paragraphs) {
 	var count = 0;
 	var footnotes = [];
 	forEach(paragraphs, function(p) {
-		if(typeof(p['content'] != 'undefined' && p['content'].length > 0) {
+		if(typeof(p['content']) != 'undefined' && p['content'].length > 0) {
 			forEach(p['content'], function(fragment) {
 				if(fragment['type'] == 'footnote') {
 					footnotes.push(fragment['content']);
@@ -382,4 +382,20 @@ function extractFootnotes(paragraphs) {
 	return footnotes;
 }
 
-ejs.debug();
+a = map(processParagraph, paragraphs);
+forEach(extractFootnotes(a), function(e) {
+		ejs.debug(e + "\n");
+		});
+
+ejs.banner('extract footnotes, reimplemented using map'); 
+function extractFootnotes(paragraphs) {
+	var footNotes = [];
+	var count = 0;
+	function replaceFootnotes()
+
+	forEach(paragraphs, function(p) {
+		p['content'] = map(replaceFootnote, p['content']);
+	});
+
+}
+	
