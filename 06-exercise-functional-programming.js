@@ -391,11 +391,59 @@ ejs.banner('extract footnotes, reimplemented using map');
 function extractFootnotes(paragraphs) {
 	var footNotes = [];
 	var count = 0;
-	function replaceFootnotes()
+	function replaceFootnotes(e) {
+		if (e['type'] == 'footnote') {
+			footNotes.push(e['content']);
+			e['content'] = count;
+			e['type'] = 'reference';
+		}
+		count++;
+		return e;
+	}
 
 	forEach(paragraphs, function(p) {
-		p['content'] = map(replaceFootnote, p['content']);
+		p['content'] = map(replaceFootnotes, p['content']);
 	});
+	return footNotes;
 
 }
 	
+a = map(processParagraph, paragraphs);
+forEach(extractFootnotes(a), function(e) {
+		ejs.debug(e + "\n");
+		});
+
+// toto: is this line necessary in the book's version of extrFootNotes?
+//fragment.number = currentNote;
+
+
+ejs.banner('generating html'); 
+function tag(name, content, attributes) {
+	return {'name':name, 'content':content, 'attributes':attributes};
+}
+
+function link(target, text) {
+	return tag('a', [text], {'href':target});
+}
+
+function htmlDoc(title, bodyContent) {
+	return tag("html", [tag("head", [tag("title", [title])]),
+						tag("body", bodyContent)]);
+}
+function img(src, alt) {
+	return tag("img", [], {'src':src, 'alt':alt});
+}
+
+ejs.banner('escape html');
+function escapeHTML(text) {
+	var replacements = [[/&/g, "&amp;"], [/"/g, "&quot;"],
+                      [/</g, "&lt;"], [/>/g, "&gt;"]];
+	forEach(replacements, function(e) {
+		text = text.replace(e[0], e[1]);	
+	});
+	return text;
+}
+
+s = 'amp & | quote " | less than < | greater than >';
+ejs.debug(escapeHTML(s));
+
