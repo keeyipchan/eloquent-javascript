@@ -13,6 +13,15 @@ var ejs = {
 			ejs.debug('---------------------------');
 			ejs.debug(s);
 			ejs.debug('---------------------------');
+		},
+		'debugObj':function(s) {
+			if(typeof(s) == 'object') {
+				forEach(s, function(e) {
+					ejs.debugObj(e);	
+				});
+			} else {
+				ejs.debug(s);
+			}
 		}
 };
 ejs.banner('forEach');
@@ -433,7 +442,9 @@ function htmlDoc(title, bodyContent) {
 function img(src, alt) {
 	return tag("img", [], {'src':src, 'alt':alt});
 }
-
+linksy = link('http://foo.bar', 'baz');
+ejs.debug(linksy);
+ejs.debugObj(htmlDoc('foo', 'bar'));
 ejs.banner('escape html');
 function escapeHTML(text) {
 	var replacements = [[/&/g, "&amp;"], [/"/g, "&quot;"],
@@ -447,3 +458,6 @@ function escapeHTML(text) {
 s = 'amp & | quote " | less than < | greater than >';
 ejs.debug(escapeHTML(s));
 
+function renderHTML(element) {
+
+}
