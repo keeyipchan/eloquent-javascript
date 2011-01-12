@@ -14,11 +14,19 @@ var ejs = {
 			ejs.debug(s);
 			ejs.debug('---------------------------');
 		},
-		'debugObj':function(s) {
-			if(typeof(s) == 'object') {
-				for (prop in s) {
-					ejs.debugObj(prop + ':' + s[prop]);	
-				}
+		'debugObj':function() {
+		}
+
+		'toString':function(obj) {
+			var s = ''
+			var type = typeof obj;
+			if (type == 'object' && typeof obj.length != 'undefined') {
+				type = 'list';
+			}
+			for (prop in obj) {
+				ejs.debugObj(prop + ':' + s[prop]);	
+			}
+			if(typeof(obj) == 'object') {
 			} else {
 				ejs.debug(s);
 			}
@@ -466,10 +474,10 @@ function renderHTML(element) {
 			ejs.debug('0000');
 			ejs.debugObj(e);
 			ejs.debug('0000');
-			if(typeof e.content != 'undefined' && e.content.length) {
-				render(e['content']);
+			if(typeof e.content == 'object' && e.content.length) {
+				render(e.content);
 			} else {
-				toHTML(e['content']);
+				toHTML(e.content);
 			}
 		});
 	}
