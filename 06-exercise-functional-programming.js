@@ -459,5 +459,20 @@ s = 'amp & | quote " | less than < | greater than >';
 ejs.debug(escapeHTML(s));
 
 function renderHTML(element) {
+	render(element) {
 
+	}
+	function render(elements) {
+		forEach(elements, function(e) {
+			if(e['content'].length) {
+				render(e['content']);
+			} else {
+				toHTML(e['content']);
+			}
+		});
+	}
+
+	function toHTML(o) {
+		html = '';
+	}
 }
