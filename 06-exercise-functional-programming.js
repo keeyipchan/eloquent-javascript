@@ -499,31 +499,41 @@ s = 'amp & | quote " | less than < | greater than >';
 ejs.debug(escapeHTML(s));
 
 function renderHTML(element) {
-	render([element]);
+	var s = ''
+	return render([element]);
 
 	function render(elements) {
 		forEach(elements, function(e) {
-			ejs.debug('0000');
+			ejs.debug('----start');
 			ejs.debugObj(e);
-			ejs.debug('0000');
-			if(typeof e.content == 'object' && e.content.length) {
-				render(e.content);
-			} else {
-				toHTML(e.content);
+			ejs.debug('----end\n');
+			if (typeof e == 'object') {
+				for (prop in e) {
+					ejs.debug('prop ' + prop);
+					if(typeof e[prop] == 'object') {
+						s += render(e[prop]);
+					} else {
+						s += toHTML(e[prop]);
+					}
+				}
 			}
 		});
+		return s;
 	}
 
 	function toHTML(element) {
+		ejs.debug('element ' + ejs.toString(element));
 		if(typeof element != 'undefined') {
 			html = '';
 			attributes = '';
-				attributes = reduce(element.attributes, '', function(base, attribute) {
+				attributes = reduce(function(base, attribute) {
 					return base += attribute;
-				});
-			return '<' + element.tag + ' ' + attributes + '>' + element.content + '</' + element.tag + '>';
+				}, '', element.attributes);
+			return '<' + element.name + ' ' + attributes + '>' + element.content + '</' + element.tag + '>';
 		}
 	}
 }
 ejs.debug(renderHTML(linksy));
-ejs.debugObj({'foo':'bar', 'list':[1, 2, {'baz':'qux', 'emty_list':[]} ]});
+//ejs.debugObj({'foo':'bar', 'list':[1, 2, {'baz':'qux', 'emty_list':[]} ]});
+
+
