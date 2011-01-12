@@ -16,9 +16,9 @@ var ejs = {
 		},
 		'debugObj':function(s) {
 			if(typeof(s) == 'object') {
-				forEach(s, function(e) {
-					ejs.debugObj(e);	
-				});
+				for (prop in s) {
+					ejs.debugObj(prop + ':' + s[prop]);	
+				}
 			} else {
 				ejs.debug(s);
 			}
@@ -459,12 +459,14 @@ s = 'amp & | quote " | less than < | greater than >';
 ejs.debug(escapeHTML(s));
 
 function renderHTML(element) {
-	render(element) {
+	render([element]);
 
-	}
 	function render(elements) {
 		forEach(elements, function(e) {
-			if(e['content'].length) {
+			ejs.debug('0000');
+			ejs.debugObj(e);
+			ejs.debug('0000');
+			if(typeof e.content != 'undefined' && e.content.length) {
 				render(e['content']);
 			} else {
 				toHTML(e['content']);
@@ -472,7 +474,15 @@ function renderHTML(element) {
 		});
 	}
 
-	function toHTML(o) {
-		html = '';
+	function toHTML(element) {
+		if(typeof element != 'undefined') {
+			html = '';
+			attributes = '';
+				attributes = reduce(element.attributes, '', function(base, attribute) {
+					return base += attribute;
+				});
+			return '<' + element.tag + ' ' + attributes + '>' + element.content + '</' + element.tag + '>';
+		}
 	}
 }
+ejs.debug(renderHTML(linksy));
