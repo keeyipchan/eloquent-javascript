@@ -538,6 +538,46 @@ function renderHTML(element) {
 		}
 	}
 }
+//ejs.debug(renderHTML(linksy));
+//ejs.debug(renderHTML(whatsupdoc));
+//ejs.debugObj({'foo':'bar', 'list':[1, 2, {'baz':'qux', 'emty_list':[]} ]});
+ejs.banner('reimplement render');
+function renderHTML(element) {
+	return render(element);
+
+	function render(element) {
+		var s = '';
+		var innerContent = '';
+		// check if we have a list for the content
+		ejs.debugObj(element);
+		if (typeof element != 'undefined' && 
+				typeof element.content != 'undefined' && 
+				typeof element.content.length != 'undefined') {
+			ejs.debug('element content:');
+			ejs.debugObj(element.content);
+			innerContent = reduce(function(base, obj) {
+				return base += render(obj);
+				}, innerContent, element.content);
+			element.content = innerContent;
+			ejs.debug('inner content ' + innerContent);
+		} else if (typeof element == 'string') {
+			s += element;
+		}
+		s += toHTML(element);
+		return s;
+	}
+
+	function toHTML(element) {
+		//ejs.debug('element ' + ejs.toString(element));
+		if(typeof element != 'undefined') {
+			html = '';
+			attributes = '';
+				attributes = reduce(function(base, attribute) {
+					return base += attribute;
+				}, '', element.attributes);
+			return '<' + element.name + ' ' + attributes + '>' + element.content + '</' + element.name + '>';
+		}
+	}
+}
 ejs.debug(renderHTML(linksy));
 ejs.debug(renderHTML(whatsupdoc));
-//ejs.debugObj({'foo':'bar', 'list':[1, 2, {'baz':'qux', 'emty_list':[]} ]});
