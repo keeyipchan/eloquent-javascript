@@ -484,7 +484,8 @@ function img(src, alt) {
 }
 linksy = link('http://foo.bar', 'baz');
 ejs.debug(linksy);
-ejs.debugObj(htmlDoc('foo', 'bar'));
+whatsupdoc = htmlDoc('foo', 'bar')
+ejs.debugObj(whatsupdoc);
 ejs.banner('escape html');
 function escapeHTML(text) {
 	var replacements = [[/&/g, "&amp;"], [/"/g, "&quot;"],
@@ -499,24 +500,28 @@ s = 'amp & | quote " | less than < | greater than >';
 ejs.debug(escapeHTML(s));
 
 function renderHTML(element) {
-	var s = ''
+	var s = '';
+	var innerTags = '';
 	return render([element]);
 
 	function render(elements) {
 		forEach(elements, function(e) {
 			ejs.debug('----start');
+			ejs.debug('element is:');
 			ejs.debugObj(e);
-			ejs.debug('----end\n');
-			if (typeof e == 'object') {
-				for (prop in e) {
-					ejs.debug('prop ' + prop);
-					if(typeof e[prop] == 'object') {
-						s += render(e[prop]);
-					} else {
-						s += toHTML(e[prop]);
-					}
+			ejs.debug(s);
+			// if it's a list of objects, then try to render each one
+			if (typeof e != 'undefined' && typeof e.content != 'undefined' && typeof e.content.length != 'undefined') {
+				innerTags = '';
+				ejs.debug('content is:');
+				ejs.debugObj(e.content);
+				for (tag in e.content) {
+					innerTags += render(e.content[tag]);
 				}
-			}
+				e.content = innerTags;
+			} 
+			ejs.debug('----end\n');
+			s += toHTML(e);
 		});
 		return s;
 	}
@@ -529,11 +534,10 @@ function renderHTML(element) {
 				attributes = reduce(function(base, attribute) {
 					return base += attribute;
 				}, '', element.attributes);
-			return '<' + element.name + ' ' + attributes + '>' + element.content + '</' + element.tag + '>';
+			return '<' + element.name + ' ' + attributes + '>' + element.content + '</' + element.name + '>';
 		}
 	}
 }
 ejs.debug(renderHTML(linksy));
+ejs.debug(renderHTML(whatsupdoc));
 //ejs.debugObj({'foo':'bar', 'list':[1, 2, {'baz':'qux', 'emty_list':[]} ]});
-
-
