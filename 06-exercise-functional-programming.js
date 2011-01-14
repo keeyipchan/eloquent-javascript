@@ -560,10 +560,10 @@ function renderHTML(element) {
 				}, innerContent, element.content);
 			element.content = innerContent;
 			ejs.debug('inner content ' + innerContent);
+			s += toHTML(element);
 		} else if (typeof element == 'string') {
 			s += element;
 		}
-		s += toHTML(element);
 		return s;
 	}
 
@@ -571,13 +571,25 @@ function renderHTML(element) {
 		//ejs.debug('element ' + ejs.toString(element));
 		if(typeof element != 'undefined') {
 			html = '';
-			attributes = '';
+			attributes = [];
+			for(attr in element.attributes) {
+				attributes.push(attr + '="' + element.attributes[attr] + '"');
+			}
+			/*
 				attributes = reduce(function(base, attribute) {
 					return base += attribute;
 				}, '', element.attributes);
-			return '<' + element.name + ' ' + attributes + '>' + element.content + '</' + element.name + '>';
+			*/
+			ret = '<' + element.name;
+			if(attributes.length > 0) {
+				 ret += ' ' + attributes.join(' ');
+			}
+			ret += '>' + element.content + '</' + element.name + '>';
+			return ret;
 		}
 	}
 }
 ejs.debug(renderHTML(linksy));
 ejs.debug(renderHTML(whatsupdoc));
+ejs.debug(renderHTML(htmlDoc('foo', [linksy, tag("p", ["some stuff"], {'class':'bleargh', 'id':'asdf'}) ])));
+
