@@ -589,7 +589,35 @@ function renderHTML(element) {
 		}
 	}
 }
-ejs.debug(renderHTML(linksy));
-ejs.debug(renderHTML(whatsupdoc));
+ejs.debug(renderHTML(htmlDoc('foo', [linksy, tag("p", ["some stuff"], {'class':'bleargh', 'id':'asdf'}) ])));
+ejs.banner('book version of renderHTML');
+function renderHTML(element) {
+	var pieces = [];
+	function renderAttributes(attributes) {
+		var result = [];
+		for (name in attributes) {
+			result.push(" " + name + "=\"" + escapeHTML(attributes[name]) + "\"");
+		}
+		return result.join("");
+	}
+
+	function render(element) {
+		if(typeof element == "string") {
+			pieces.push(escapeHTML(element));
+		} else if (!element.content || element.content.length == 0) {
+			pieces.push("<" + element.name + renderAttributes(element.attributes) + "/>");
+		} else {
+			pieces.push("<" + element.name + renderAttributes(element.attributes) + ">");
+			forEach(element.content, render);
+			pieces.push("</" + element.name + ">");
+		}
+	}
+	render(element);
+	return pieces.join("");
+}
 ejs.debug(renderHTML(htmlDoc('foo', [linksy, tag("p", ["some stuff"], {'class':'bleargh', 'id':'asdf'}) ])));
 
+ejs.banner('6.5');
+function renderFragment() {
+
+}
