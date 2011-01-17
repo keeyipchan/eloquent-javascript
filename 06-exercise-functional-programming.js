@@ -1,11 +1,13 @@
 var ejs = {
 		'debug':function(s) {
+			var debugLine = s;
+			if (typeof(s) == 'object') { debugLine = ejs.toString(s) }
 			if(typeof(print) != 'undefined') {
-				print(s);
+				print(debugLine);
 			} else if(typeof(console) != 'undefined' && console.debug)  {
-				console.debug(s);
+				console.debug(debugLine);
 			} else if(typeof(alert) != 'undefined') {
-				alert(s)
+				alert(debugLine);
 			}
 		},
 		'banner': function(s) {
@@ -618,6 +620,41 @@ function renderHTML(element) {
 ejs.debug(renderHTML(htmlDoc('foo', [linksy, tag("p", ["some stuff"], {'class':'bleargh', 'id':'asdf'}) ])));
 
 ejs.banner('6.5');
-function renderFragment() {
+var testH = {'type':'h2','content':[{'content': 'Progression','type':'text'}]};
+var testP = {'type':'p','content':[{'content':'A beginning programmer writes his programs like an ant builds her hill, one piece at a time, without thought for the bigger structure.  His programs will be like loose sand. They may stand for a while, but growing too big they fall apart','type':'text'},{'content':'Referring to the danger of internal inconsistency and duplicated structure in unorganised code.','type':'footnote'},{'content':'.','type':'text'}]};
+function renderFragment(fragment) {
+	function fragToTag() {
+		// switch  on type to determine tag name
+		name = fragment.type;
+		attributes = [];
+		// if content is not a string, then fragToTag
+		if(typeof fragment.content == 'string') {
+
+		}
+		tag(name, content, attributes) 
+	// check the content of this fragment
+	// if the type of the content is a string
+	// go through each list and render each fragment in the list
+	// otherwise, switch on type
+	// p
+	// h2
+	// reference
+	// text
+	}
+	tag = fragToTag()
+	return renderHTML(tag);
+}
+function renderParagraph(paragraph) {
+	forEach(paragraph, function(fragment) {
+		renderFragment(fragment);
+	});
 
 }
+/*
+a = map(processParagraph, paragraphs);
+ejs.debugObj(a);
+forEach(extractFootnotes(a), function(e) {
+		ejs.debug(e + "\n");
+		});
+*/
+//ejs.debug(renderFragment(testP));
