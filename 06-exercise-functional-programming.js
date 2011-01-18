@@ -1,11 +1,13 @@
 var ejs = {
 		'debug':function(s) {
+			var debugLine = s;
+			if (typeof(s) == 'object') { debugLine = ejs.toString(s) }
 			if(typeof(print) != 'undefined') {
-				print(s);
+				print(debugLine);
 			} else if(typeof(console) != 'undefined' && console.debug)  {
-				console.debug(s);
+				console.debug(debugLine);
 			} else if(typeof(alert) != 'undefined') {
-				alert(s)
+				alert(debugLine);
 			}
 		},
 		'banner': function(s) {
@@ -618,15 +620,68 @@ function renderHTML(element) {
 ejs.debug(renderHTML(htmlDoc('foo', [linksy, tag("p", ["some stuff"], {'class':'bleargh', 'id':'asdf'}) ])));
 
 ejs.banner('6.5');
-ejs.debugObj(paragraphs);
-function renderParagraph(paragraph)  {
-	function renderFragment() {
-		renderHTML();
+var testH = {'type':'h2','content':[{'content': 'Progression','type':'text'}]};
+var testP = {'type':'p','content':[{'content':'A beginning programmer writes his programs like an ant builds her hill, one piece at a time, without thought for the bigger structure.  His programs will be like loose sand. They may stand for a while, but growing too big they fall apart','type':'text'},{'content':'Referring to the danger of internal inconsistency and duplicated structure in unorganised code.','type':'footnote'},{'content':'.','type':'text'}]};
+function renderFragment(fragment) {
+	function fragToTag(fragment) {
+		var innerContent;
+		if(typeof fragment != 'undefined') {
+			if(typeof fragment.content != 'string') {
+				innerContent =  map(fragToTag, fragment.content);			
+			} else {
+				innerContent = fragment.content;
+			}
+
+			if(fragment.type == 'text') {
+				return innerContent;
+			} else if(fragment.type == 'reference' || fragment.type == 'footnote') {
+				return tag('sup', [link('#footnotes' + String(fragment.content), String(fragment.content))] , []);
+			} else if(fragment.type == 'em') {
+				return tag(fragment.type, [innerContent] , []);
+			} else {
+				return tag(fragment.type, innerContent , []);
+			}
+		}
 	}
+	var t = fragToTag(fragment);
+	return renderHTML(t);
+}
+function renderParagraph(paragraph) {
+	forEach(paragraph, function(fragment) {
+		renderFragment(fragment);
+	});
+
+}
+a = map(processParagraph, paragraphs);
+footnoes = extractFootnotes(a);
+
+renderFragment(testP);
+forEach(a, function(paragraph) {
+	ejs.debug(renderFragment(paragraph));
+});
+
+function renderParagraph(paragraph) {
+	return tag(paragraph.type, map(renderFragment, paragraph.content));
 }
 
+function footnote(n) {
+	return link('#footnotes' + String(n), String(n));
+}
+function renderFragment(fragment) {
+	if (fragment.type == "reference")
+		return footnote(fragment.content);
+	else if (fragment.type == "emphasised")
+		return tag("em", [fragment.content]);
+	else if (fragment.type == "normal" || fragment.type == "text")
+		return fragment.content;
+}
 a = map(processParagraph, paragraphs);
-forEach(extractFootnotes(a), function(e) {
-		ejs.debug(e + "\n");
-		});
-ejs.debugObj(a);
+footnoes = extractFootnotes(a);
+
+ejs.debug('start*********');
+renderFragment(testP);
+forEach(a, function(paragraph) {
+	//ejs.debug(renderParagraph(paragraph));
+	ejs.debug(renderHTML(renderParagraph(paragraph)));
+});
+ejs.debug('end**********');
