@@ -623,15 +623,30 @@ ejs.banner('6.5');
 var testH = {'type':'h2','content':[{'content': 'Progression','type':'text'}]};
 var testP = {'type':'p','content':[{'content':'A beginning programmer writes his programs like an ant builds her hill, one piece at a time, without thought for the bigger structure.  His programs will be like loose sand. They may stand for a while, but growing too big they fall apart','type':'text'},{'content':'Referring to the danger of internal inconsistency and duplicated structure in unorganised code.','type':'footnote'},{'content':'.','type':'text'}]};
 function renderFragment(fragment) {
-	function fragToTag() {
-		// switch  on type to determine tag name
-		name = fragment.type;
-		attributes = [];
-		// if content is not a string, then fragToTag
-		if(typeof fragment.content == 'string') {
-
-		}
-		tag(name, content, attributes) 
+	function fragToTag(fragment) {
+		var innerContent;
+		//ejs.debug('==== ' + typeof fragment);
+		if(typeof fragment != 'undefined') {
+			// switch  on type to determine tag name
+			// if content is not a string, then fragToTag
+			ejs.debug('FRAGMENT TYPE  ' + fragment.type);
+			if(typeof fragment.content != 'string') {
+				//ejs.debug(fragment.content);
+				innerContent = map(function(c) {
+					//ejs.debug('----');
+					//ejs.debug(c);
+					var t = fragToTag(c);
+					//ejs.debug(t);
+					//ejs.debug('----\n\n');
+					return t;
+				}, fragment.content);
+			} else {
+				innerContent = fragment.content;
+			}
+			//ejs.debug('INNER Content');
+			//ejs.debug(innerContent);
+			return tag(fragment.type, innerContent , []);
+			//ejs.debug('TYPE ' + name);
 	// check the content of this fragment
 	// if the type of the content is a string
 	// go through each list and render each fragment in the list
@@ -640,9 +655,12 @@ function renderFragment(fragment) {
 	// h2
 	// reference
 	// text
+		}
 	}
-	tag = fragToTag()
-	return renderHTML(tag);
+	var t = fragToTag(fragment);
+			ejs.debug('T IS EQUAL TO');
+	ejs.debug(t);
+	return renderHTML(t);
 }
 function renderParagraph(paragraph) {
 	forEach(paragraph, function(fragment) {
@@ -657,4 +675,5 @@ forEach(extractFootnotes(a), function(e) {
 		ejs.debug(e + "\n");
 		});
 */
-//ejs.debug(renderFragment(testP));
+ejs.debug(renderFragment(testP));
+ejs.debug(renderHTML(htmlDoc('foo', [linksy, tag("p", ["some stuff"], {'class':'bleargh', 'id':'asdf'}) ])));
