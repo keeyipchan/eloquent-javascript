@@ -635,7 +635,7 @@ function renderFragment(fragment) {
 			if(fragment.type == 'text') {
 				return innerContent;
 			} else if(fragment.type == 'reference' || fragment.type == 'footnote') {
-				return tag('sup', '*' , []);
+				return tag('sup', [String(fragment.content)] , []);
 			} else {
 				return tag(fragment.type, innerContent , []);
 			}
@@ -650,4 +650,11 @@ function renderParagraph(paragraph) {
 	});
 
 }
+a = map(processParagraph, paragraphs);
+footnoes = extractFootnotes(a);
+
 ejs.debug(renderFragment(testP));
+ejs.debug(a);
+forEach(a, function(paragraph) {
+	ejs.debug(renderFragment(paragraph));
+});
