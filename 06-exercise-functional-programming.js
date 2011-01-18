@@ -635,7 +635,9 @@ function renderFragment(fragment) {
 			if(fragment.type == 'text') {
 				return innerContent;
 			} else if(fragment.type == 'reference' || fragment.type == 'footnote') {
-				return tag('sup', [String(fragment.content)] , []);
+				return tag('sup', [link('#footnotes' + String(fragment.content), String(fragment.content))] , []);
+			} else if(fragment.type == 'em') {
+				return tag(fragment.type, [innerContent] , []);
 			} else {
 				return tag(fragment.type, innerContent , []);
 			}
@@ -653,8 +655,22 @@ function renderParagraph(paragraph) {
 a = map(processParagraph, paragraphs);
 footnoes = extractFootnotes(a);
 
-ejs.debug(renderFragment(testP));
-ejs.debug(a);
+renderFragment(testP);
 forEach(a, function(paragraph) {
 	ejs.debug(renderFragment(paragraph));
 });
+
+/*
+function renderParagraph(paragraph) {
+	return tag(paragraph.type, map(renderFragment, paragraph.content));
+}
+
+function renderFragment(fragment) {
+	if (fragment.type == "reference")
+		return footnote(fragment.number);
+	else if (fragment.type == "emphasised")
+		return tag("em", [fragment.content]);
+	else if (fragment.type == "normal" || fragment.type == "text")
+		return fragment.content;
+}
+*/
