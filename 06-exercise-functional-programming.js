@@ -625,41 +625,23 @@ var testP = {'type':'p','content':[{'content':'A beginning programmer writes his
 function renderFragment(fragment) {
 	function fragToTag(fragment) {
 		var innerContent;
-		//ejs.debug('==== ' + typeof fragment);
 		if(typeof fragment != 'undefined') {
-			// switch  on type to determine tag name
-			// if content is not a string, then fragToTag
-			ejs.debug('FRAGMENT TYPE  ' + fragment.type);
 			if(typeof fragment.content != 'string') {
-				//ejs.debug(fragment.content);
-				innerContent = map(function(c) {
-					//ejs.debug('----');
-					//ejs.debug(c);
-					var t = fragToTag(c);
-					//ejs.debug(t);
-					//ejs.debug('----\n\n');
-					return t;
-				}, fragment.content);
+				innerContent =  map(fragToTag, fragment.content);			
 			} else {
 				innerContent = fragment.content;
 			}
-			//ejs.debug('INNER Content');
-			//ejs.debug(innerContent);
-			return tag(fragment.type, innerContent , []);
-			//ejs.debug('TYPE ' + name);
-	// check the content of this fragment
-	// if the type of the content is a string
-	// go through each list and render each fragment in the list
-	// otherwise, switch on type
-	// p
-	// h2
-	// reference
-	// text
+
+			if(fragment.type == 'text') {
+				return innerContent;
+			} else if(fragment.type == 'reference' || fragment.type == 'footnote') {
+				return tag('sup', '*' , []);
+			} else {
+				return tag(fragment.type, innerContent , []);
+			}
 		}
 	}
 	var t = fragToTag(fragment);
-			ejs.debug('T IS EQUAL TO');
-	ejs.debug(t);
 	return renderHTML(t);
 }
 function renderParagraph(paragraph) {
@@ -668,12 +650,4 @@ function renderParagraph(paragraph) {
 	});
 
 }
-/*
-a = map(processParagraph, paragraphs);
-ejs.debugObj(a);
-forEach(extractFootnotes(a), function(e) {
-		ejs.debug(e + "\n");
-		});
-*/
 ejs.debug(renderFragment(testP));
-ejs.debug(renderHTML(htmlDoc('foo', [linksy, tag("p", ["some stuff"], {'class':'bleargh', 'id':'asdf'}) ])));
