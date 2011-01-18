@@ -660,17 +660,28 @@ forEach(a, function(paragraph) {
 	ejs.debug(renderFragment(paragraph));
 });
 
-/*
 function renderParagraph(paragraph) {
 	return tag(paragraph.type, map(renderFragment, paragraph.content));
 }
 
+function footnote(n) {
+	return link('#footnotes' + String(n), String(n));
+}
 function renderFragment(fragment) {
 	if (fragment.type == "reference")
-		return footnote(fragment.number);
+		return footnote(fragment.content);
 	else if (fragment.type == "emphasised")
 		return tag("em", [fragment.content]);
 	else if (fragment.type == "normal" || fragment.type == "text")
 		return fragment.content;
 }
-*/
+a = map(processParagraph, paragraphs);
+footnoes = extractFootnotes(a);
+
+ejs.debug('start*********');
+renderFragment(testP);
+forEach(a, function(paragraph) {
+	//ejs.debug(renderParagraph(paragraph));
+	ejs.debug(renderHTML(renderParagraph(paragraph)));
+});
+ejs.debug('end**********');
