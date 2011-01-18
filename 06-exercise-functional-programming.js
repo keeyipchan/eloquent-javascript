@@ -618,6 +618,15 @@ function renderHTML(element) {
 ejs.debug(renderHTML(htmlDoc('foo', [linksy, tag("p", ["some stuff"], {'class':'bleargh', 'id':'asdf'}) ])));
 
 ejs.banner('6.5');
-function renderFragment() {
-
+ejs.debugObj(paragraphs);
+function renderParagraph(paragraph)  {
+	function renderFragment() {
+		renderHTML();
+	}
 }
+
+a = map(processParagraph, paragraphs);
+forEach(extractFootnotes(a), function(e) {
+		ejs.debug(e + "\n");
+		});
+ejs.debugObj(a);
