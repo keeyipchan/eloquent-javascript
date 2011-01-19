@@ -670,7 +670,7 @@ function footnote(n) {
 function renderFragment(fragment) {
 	if (fragment.type == "reference")
 		return footnote(fragment.content);
-	else if (fragment.type == "emphasised")
+	else if (fragment.type == "em")
 		return tag("em", [fragment.content]);
 	else if (fragment.type == "normal" || fragment.type == "text")
 		return fragment.content;
@@ -678,10 +678,7 @@ function renderFragment(fragment) {
 a = map(processParagraph, paragraphs);
 footnoes = extractFootnotes(a);
 
-ejs.debug('start*********');
 renderFragment(testP);
 forEach(a, function(paragraph) {
-	//ejs.debug(renderParagraph(paragraph));
 	ejs.debug(renderHTML(renderParagraph(paragraph)));
 });
-ejs.debug('end**********');
