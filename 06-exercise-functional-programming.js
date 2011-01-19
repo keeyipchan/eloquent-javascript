@@ -664,7 +664,7 @@ forEach(a, function(paragraph) {
 });
 
 function renderParagraph(paragraph) {
-	ejs.debug(paragraph.content);
+	//ejs.debug(paragraph.content);
 	return tag(paragraph.type, map(renderFragment, paragraph.content));
 }
 
@@ -672,7 +672,7 @@ function footnote(n) {
 	return tag('sup', [link('#footnotes' + String(n), String(n))]);
 }
 function renderFragment(fragment) {
-	ejs.debug(fragment);
+	//ejs.debug(fragment);
 	if (fragment.type == "reference") {
 		return footnote(fragment.content);
 	} else if (fragment.type == "em") {
@@ -691,23 +691,19 @@ forEach(a, function(paragraph) {
 
 ejs.banner('renderFootnote');
 function renderFootnote(footnote) {
- var a = tag('a', [], {'name':"footnote" + footnote.number});
- var n = '[' + footnote.number + ']';
- return tag('p', [tag('small', [a, n, footnote.content])]);
+	var a = tag('a', [], {'name':"footnote" + footnote.number});
+	var n = '[' + footnote.number + ']';
+	return tag('p', [tag('small', [a, n, footnote.content])]);
 }
 //ejs.debug(footnotes);
 //ejs.debug(map(renderHTML, (map(renderFootnote, footnotes))));
 ejs.banner('renderFile');
 function renderFile(file, title) {
 	var paragraphs = map(processParagraph, file.split("\n\n"));
-	var footnotes = map(renderFootnote, extractFootnotes(a));
+	var footnotes = map(renderFootnote, extractFootnotes(paragraphs));
 	var body = map(renderParagraph, paragraphs).concat(footnotes);
+	//ejs.debug(body);
 	return renderHTML(htmlDoc(title, body));
 }
-try {
 ejs.debug(renderFile(recluseFile(), 'Foo'));
-}
-catch(e) {
-	print(e);
-}
 
