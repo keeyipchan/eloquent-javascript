@@ -706,4 +706,31 @@ function renderFile(file, title) {
 	return renderHTML(htmlDoc(title, body));
 }
 ejs.debug(renderFile(recluseFile(), 'Foo'));
+ejs.banner('op object');
 
+var op = {
+	'+': function(a, b) {return a + b;},
+	'-': function(a, b) {return a - b;},
+	'*': function(a, b) {return a * b;},
+	'/': function(a, b) {return a / b;},
+	'==': function(a, b) {return a == b;},
+	'===': function(a, b) {return a === b;},
+	'!': function(a) {return !a;}
+}
+
+ejs.debug(reduce(op['+'], 0, [1,2,3,4,5]));
+ejs.banner('partial application');
+function asArray(quasiArray, start) {
+	var result = [];
+	for (var i=(start || 0); i < quasiArray.length; i++)
+		result.push(quasiArray[i]);
+	return result;
+}
+
+function partial(func) {
+	var fixedArgs = asArray(arguments, 1);
+	return function() {
+		return func.apply(null, fixedArgs.concat(asArray(arguments)));
+	};
+}
+ejs.debug(map(partial(op["+"], 1), [0,2,3,4,5]));
