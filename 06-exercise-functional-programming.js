@@ -444,7 +444,7 @@ function extractFootnotes(paragraphs) {
 	var count = 0;
 	function replaceFootnotes(e) {
 		if (e['type'] == 'footnote') {
-			footNotes.push(e['content']);
+			footNotes.push({'content':e['content'], 'number':count});
 			e['content'] = count;
 			e['type'] = 'reference';
 		}
@@ -551,7 +551,8 @@ function renderHTML(element) {
 		var s = '';
 		var innerContent = '';
 		// check if we have a list for the content
-		ejs.debugObj(element);
+		ejs.debug('&&&&&&&&&');
+		ejs.debug(element);
 		if (typeof element != 'undefined' && 
 				typeof element.content != 'undefined' && 
 				typeof element.content.length != 'undefined') {
@@ -604,14 +605,16 @@ function renderHTML(element) {
 	}
 
 	function render(element) {
+		if(typeof element != 'undefined') {
 		if(typeof element == "string") {
 			pieces.push(escapeHTML(element));
-		} else if (!element.content || element.content.length == 0) {
+		} else if (!element.content || typeof element.content != 'undefined' && element.content.length == 0) {
 			pieces.push("<" + element.name + renderAttributes(element.attributes) + "/>");
 		} else {
 			pieces.push("<" + element.name + renderAttributes(element.attributes) + ">");
 			forEach(element.content, render);
 			pieces.push("</" + element.name + ">");
+		}
 		}
 	}
 	render(element);
@@ -661,27 +664,50 @@ forEach(a, function(paragraph) {
 });
 
 function renderParagraph(paragraph) {
+	ejs.debug(paragraph.content);
 	return tag(paragraph.type, map(renderFragment, paragraph.content));
 }
 
 function footnote(n) {
-	return link('#footnotes' + String(n), String(n));
+	return tag('sup', [link('#footnotes' + String(n), String(n))]);
 }
 function renderFragment(fragment) {
-	if (fragment.type == "reference")
+	ejs.debug(fragment);
+	if (fragment.type == "reference") {
 		return footnote(fragment.content);
-	else if (fragment.type == "emphasised")
+	} else if (fragment.type == "em") {
 		return tag("em", [fragment.content]);
-	else if (fragment.type == "normal" || fragment.type == "text")
+	} else if (fragment.type == "normal" || fragment.type == "text") {
 		return fragment.content;
+	}
 }
 a = map(processParagraph, paragraphs);
-footnoes = extractFootnotes(a);
+footnotes = extractFootnotes(a);
 
-ejs.debug('start*********');
 renderFragment(testP);
 forEach(a, function(paragraph) {
-	//ejs.debug(renderParagraph(paragraph));
 	ejs.debug(renderHTML(renderParagraph(paragraph)));
 });
-ejs.debug('end**********');
+
+ejs.banner('renderFootnote');
+function renderFootnote(footnote) {
+ var a = tag('a', [], {'name':"footnote" + footnote.number});
+ var n = '[' + footnote.number + ']';
+ return tag('p', [tag('small', [a, n, footnote.content])]);
+}
+//ejs.debug(footnotes);
+//ejs.debug(map(renderHTML, (map(renderFootnote, footnotes))));
+ejs.banner('renderFile');
+function renderFile(file, title) {
+	var paragraphs = map(processParagraph, file.split("\n\n"));
+	var footnotes = map(renderFootnote, extractFootnotes(a));
+	var body = map(renderParagraph, paragraphs).concat(footnotes);
+	return renderHTML(htmlDoc(title, body));
+}
+try {
+ejs.debug(renderFile(recluseFile(), 'Foo'));
+}
+catch(e) {
+	print(e);
+}
+
