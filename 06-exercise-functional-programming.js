@@ -743,3 +743,15 @@ function square(x) {return x * x};
 // the second map will have square as its fixed function... 
 // each 2 element array will be a second argument to the second map
 ejs.debug(map(partial(map, square), [[10, 100], [12, 16], [0,1]]));
+
+ejs.banner('function composition');
+function compose(f1, f2) {
+	return function () {
+		return f1(f2.apply(null,arguments));
+	}
+}
+var isUndefined = partial(op['==='], undefined);
+var isDefined = compose(op['!'], isUndefined);
+ejs.debug(isDefined(Math.PI));
+ejs.debug(isDefined(Math.PIE));
+ejs.debug(isUndefined(Math.PI));
