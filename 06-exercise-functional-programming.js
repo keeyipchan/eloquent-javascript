@@ -728,9 +728,18 @@ function asArray(quasiArray, start) {
 }
 
 function partial(func) {
+	// need to stored fixed args in closure
 	var fixedArgs = asArray(arguments, 1);
 	return function() {
+		// when a new function is returned, it will always have fixedArgs as its first arg
 		return func.apply(null, fixedArgs.concat(asArray(arguments)));
 	};
 }
 ejs.debug(map(partial(op["+"], 1), [0,2,3,4,5]));
+equals10 = partial(op['=='], 10);
+ejs.debug(equals10(10));
+ejs.debug(equals10(12));
+function square(x) {return x * x};
+// the second map will have square as its fixed function... 
+// each 2 element array will be a second argument to the second map
+ejs.debug(map(partial(map, square), [[10, 100], [12, 16], [0,1]]));
