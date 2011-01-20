@@ -66,3 +66,45 @@ var ejs = {
 
 		}
 };
+
+function assert(expr, msg) {
+	if(!expr) {
+		throw "Assertion error: " + msg;
+	}
+}
+
+function assertTrue(val) {
+	if(val !== true) {
+		throw "Assertion error: value, " + val + ", is not true";
+	}
+}
+
+function assertFalse(val) {
+	if(val !== false) {
+		throw "Assertion error: value, " + val + ", is not false";
+	}
+}
+
+function assertDefined(val) {
+	if(typeof val === 'undefined') {
+		throw "Assertion error: value, " + val + ", is not defined";
+	}
+}
+
+function assertUndefined(val) {
+	if(typeof val !== 'undefined') {
+		throw "Assertion error: value, " + val + ", is defined";
+	}
+}
+
+function assertEquals(val1, val2) {
+	if(val1 !== val2) {
+		throw "Assertion error: " + val1 + " and " + val2 + " are not equal";
+	}
+}
+
+function assertNotEqual(val1, val2) {
+	if(val1 === val2) {
+		throw "Assertion error: " + val1 + " and " + val2 + " are equal";
+	}
+}
